@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Personal Goals{% endblock %}
+
+{% block content %}
+
+    <!-- Content section -->
+    <div class="main">
+        {% block header %}
+        <div class="header">
+            <h1>Welcome to My To-Do List</h1>
+            <p>Here's what you need to do today:</p>
+        </div>
+        {% endblock %}
+
+        <main>
+            <p></p>
+            <div id="bg-container">
+                <!-- <button id="toggle-btn">Toggle Mode</button> -->
+                <button id="change-bg" onclick="changeBackground('black')">DARK MODE</button>
+                <p></p>
+                <label for="image-upload">Select Background Image from Gallery</label>
+                <input type="file" id="image-upload">
+            </div>
+
+        </main>
+        <script src="../static/app.js">
+            $(document).ready(function () {
+                // Load initial data on page load
+                loadData();
+
+                // Handle sort by change event
+                $('#sort-by').on('change', function () {
+                    loadData();
+                });
+
+                // Handle form submit event
+                $('#add-item-form').on('submit', function (event) {
+                    event.preventDefault();
+                    var formData = $(this).serializeArray();
+                    var newItem = {};
+                    $.each(formData, function (index, field) {
+                        newItem[field.name] = field.value;
+                    });
+                    addItem(newItem);
+                    $(this)[0].reset();
+                });
+
+
+            });
+        </script>
+
+
+        <h1 style="margin-top: 120px">Daily Motivational Quotes</h1>
+        <ul>
+            <li>"Believe you can and you're halfway there."</li>
+            <li>"Success is not final, failure is not fatal: It is the courage to continue that counts."</li>
+            <li>"The only way to do great work is to love what you do."</li>
+            <li>"Don't watch the clock; do what it does. Keep going."</li>
+            <li>"The future belongs to those who believe in the beauty of their dreams."</li>
+            <li>"You don't have to be great to start, but you have to start to be great."</li>
+            <li>"The greatest glory in living lies not in never falling, but in rising every time we fall."</li>
+            <li>"Success is the sum of small efforts, repeated day in and day out."</li>
+            <li>"A goal without a plan is just a wish."</li>
+            <li>"Believe in yourself and all that you are. Know that there is something inside you that is greater than
+                any obstacle."</li>
+        </ul>
+{#        <script src="../static/app.js"></script>#}
+{#        <style src="style.css"></style>#}
+
+
+    </div>
+
+{% endblock %}

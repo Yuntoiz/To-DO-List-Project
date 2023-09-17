@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block title %}Personal Goals{% endblock %}
+
+{% block content %}
+
+
+        <!-- Main content -->
+        <div class="main">
+        {% block header %}
+        <div class="header">
+            <h1>Let's see the tasks</h1>
+            <p>Organise your tasks</p>
+        </div>
+        {% endblock %}
+            <div>
+                <button id="change-bg" onclick="changeBackground('black')">DARK MODE</button>
+                <p></p>
+                <label for="image-upload">Select Background Image from Gallery</label>
+                <input type="file" id="image-upload">
+
+
+                <script src="../static/app.js"></script>
+                <br></br>
+
+                <label>Sort by:</label>
+                <select id="sort-by">
+                    <option value="due_date">Due date</option>
+                    <option value="priority">Priority</option>
+                </select>
+                <form onsubmit="handleSubmit(event)">
+                    <label for="itemIdInput">Search:</label>
+                    <input type="text" id="itemIdInput" name="itemId">
+                    <button type="search">Search</button>
+
+                </form>
+            </div>
+
+        </div>
+
+
+
+        <table id="items-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Due date</th>
+                    <th>Priority</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <form id="add-item-form">
+            <h2>Add Item</h2>
+            <div>
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            <div>
+                <label for="description">Description:</label>
+                <textarea id="description" name="description"></textarea>
+            </div>
+            <div>
+                <label for="due-date">Due date:</label>
+                <input type="date" id="due-date" name="due_date" required>
+            </div>
+            <div>
+                <label>
+
+                </label><select id="priority" name="priority" required>
+                    <option value="">Select a priority</option>
+                    <option value="1">High</option>
+                    <option value="2">Medium</option>
+                    <option value="3">Low</option>
+                </select>
+            </div>
+            <div>
+                <button type="submit">Add Item</button>
+            </div>
+        </form>
+
+        <script>
+            $(document).ready(function () {
+                // Load initial data on page load
+                loadData();
+
+                // Handle sort by change event
+                $('#sort-by').on('change', function () {
+                    loadData();
+                });
+
+                // Handle form submit event
+                $('#add-item-form').on('submit', function (event) {
+                    event.preventDefault();
+                    var formData = $(this).serializeArray();
+                    var newItem = {};
+                    $.each(formData, function (index, field) {
+                        newItem[field.name] = field.value;
+                    });
+                    addItem(newItem);
+                    $(this)[0].reset();
+                });
+
+            });
+
+            function loadData() {
+                var sortBy = $('#sort-by').val();
+                $.ajax({
+                    url: '{{ host }}/tasks',
+                    method: 'GET',
+                    data: { sort_by: sortBy },
+                    success: function (data) {
+                        displayData(data);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log(errorThrown);
+                    }
+                });
+            }
+
+            function displayData(data) {
+                var tbody = $('#items-table tbody');
+                tbody.empty();
+                $.each(data, function (index, item) {
+                    var tr = $('<tr>').appendTo(tbody);
+                    $('<td>').text(item.id).appendTo(tr);
+                    $('<td>').text(item.title).appendTo(tr);
+                    $('<td>').text(item.description).appendTo(tr);
+                    $('<td>').text(item.due_date).appendTo(tr);
+                    $('<td>').text(item.priority).appendTo(tr);
+                    var td = $('<td>').appendTo(tr);
+                    $('<button>').text('View').click(function () {
+                        viewItem(item.id);
+
+                    }).appendTo(td);
+                    $('<button>').text('Delete').click(function () {
+                        deleteItem(item.id);
+                    }).appendTo(td);
+                });
+            }
+
+            function viewItem(itemId) {
+                $.ajax({
+                    url: '{{ host }}/tasks/' + itemId,
+                    method: 'GET',
+                    success: function (item) {
+                        var message = 'Title: ' + item.title + '\n';
+                        message += 'Description: ' + item.description + '\n';
+                        message += 'Due date: ' + item.due_date + '\n';
+                        message += 'Priority: ' + item.priority + '\n';
+                        alert("Item Details\n\n" + message);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log(errorThrown);
+                    }
+                });
+            }
+
+            function addItem(item) {
+                $.ajax({
+                    url: '{{ host }}/tasks',
+                    method: 'POST',
+                    data: JSON.stringify(item),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        loadData();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log(errorThrown);
+                    }
+                });
+            }
+
+            function handleSubmit(event) {
+                event.preventDefault();
+                var itemId = document.getElementById('itemIdInput').value;
+                viewItem(itemId);
+            }
+
+            function deleteItem(itemId) {
+                $.ajax({
+                    url: '{{ host }}/tasks/' + itemId,
+                    method: 'DELETE',
+                    success: function () {
+                        loadData();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log(errorThrown);
+                    }
+                });
+            }
+        </script>
+
+{% endblock %}

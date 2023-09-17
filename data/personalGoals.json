@@ -1,0 +1,8 @@
+[{"id": 1, "title": "Learn a new language", "description": "Dedicate 30 minutes per day to practicing Spanish","due_date": "2023-05-01", "priority": "1"},
+  
+ {"id": 2, "title": "Run a 5k", "description": "Follow a training plan to build up to running 3.1 miles", "due_date": "2023-06-01",
+"priority": "2"},
+  
+ { "id": 3, "title": "Read more books","description": "Finish one book per month and discuss with a book club", "due_date": "2023-12-31", "priority": "3"},
+  
+  { "id": 4, "title": "Travel to a new country","description": "Save money and plan a trip to Japan","due_date": "2024-01-01","priority": "2"} ]

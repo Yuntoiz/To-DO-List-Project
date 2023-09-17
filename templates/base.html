@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% block title %}<title>TO-DO LIST</title>{% endblock %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+
+
+</head>
+<body>
+
+  <div class="sidenav">
+
+<a href="{{ url_for('index') }}">Main Menu</a>
+<a href="{{ url_for('personal_goals') }}">Personal Goals</a>
+<a href="{{ url_for('tasks') }}">Tasks</a>
+
+    
+  </div>
+
+
+  {% block content %}{% endblock %}
+</body>
+</html>
